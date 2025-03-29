@@ -1,23 +1,40 @@
-import faiss
+import os
 import json
-import numpy as np
-from sentence_transformers import SentenceTransformer
+from langchain.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-index = faiss.read_index("faiss_index.bin")
-with open("metadata.json", "r") as f:
-    metadata = json.load(f)
+INDEX_PATH = "faiss_index"
+METADATA_PATH = "metadata.json"
 
-text_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+def search_faiss_index(query, top_k=5):
+    """Searches the FAISS index for the most relevant scientific papers."""
 
+    if not os.path.exists(INDEX_PATH) or not os.path.exists(METADATA_PATH):
+        raise FileNotFoundError("FAISS index or metadata file not found. Please run create_faiss_index() first.")
 
-def search_arxiv(query, top_k=5):
-    """Searches FAISS and returns papers with detailed metadata."""
+    # Load FAISS index
+    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    vector_db = FAISS.load_local(INDEX_PATH, embedding_model)
 
-    query_embedding = text_model.encode([query], convert_to_numpy=True)
-    distances, indices = index.search(query_embedding, top_k)
+    # Perform similarity search
+    results = vector_db.similarity_search(query, k=top_k)
 
-    results = []
-    for idx in indices[0]:
-        results.append(metadata[idx])
+    # Load metadata
+    with open(METADATA_PATH, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
 
-    return results
+    # Retrieve additional details from metadata
+    response = []
+    for result in results:
+        paper = next((item for item in metadata if item["abstract"] == result.page_content), None)
+        if paper:
+            response.append({
+                "title": paper["title"],
+                "authors": paper["authors"],
+                "year": paper["year"],
+                "category": paper["categories"],
+                "pdf_url": paper["pdf_url"],
+                "abstract": paper["abstract"]
+            })
+
+    return response
