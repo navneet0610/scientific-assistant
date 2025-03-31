@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maruti - Your Scientific Research Companion</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'rag/css/styles.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Two-Line Title -->
+        <div class="title">
+            <h1 class="title-main">Maruti</h1>
+            <h2 class="title-sub">Your Scientific Research Companion</h2>
+        </div>
+
+    <!-- Search Form -->
+    <form id="searchForm">
+    <input type="text" id="searchQuery" placeholder="Enter search query..." required>
+    <button type="submit">Search</button>
+    </form>
+
+    <!-- Multimodal Input Section -->
+    <div class="multimodal-container">
+    <input type="file" id="imageInput" accept="image/*">
+    <button id="recordAudio">🎤 Record</button>
+    <span id="recordingStatus"></span>
+    </div>
+
+        <!-- Results Table Container -->
+        <div id="tableContainer" class="table-container">
+            <button id="closeResults" class="close-btn">×</button>
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Authors</th>
+                        <th>Year</th>
+                        <th>Category</th>
+                        <th>Abstract</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div> <!-- Closing .container div -->
+
+    <!-- Loading Animation Overlay -->
+    <div id="loadingScreen">
+        <h1 id="loadingText">MARUTI</h1>
+        <div class="loading-bar"></div>
+    </div>
+
+    <script src="{% static 'rag/js/scripts.js' %}"></script>
+
+</body>
+</html>

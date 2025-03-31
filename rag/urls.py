@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import search_view
+from .views import search_view, index
 
 urlpatterns = [
-    path('search/', search_view, name='search'),
+    path('', index, name='index'),  # Serve frontend at "/"
+    path('search/', search_view, name='search'),  # API search endpoint
 ]
