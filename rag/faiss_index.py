@@ -1,39 +1,44 @@
 import os
 import json
-import pandas as pd
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.schema import Document
+from core import settings
 
-INDEX_DIR = "indexes/"
+INDEX_DIR = os.path.join(settings.BASE_DIR, "faiss_index")
 METADATA_PATH = "metadata.json"
 
 def create_faiss_index():
-    """Creates FAISS index from arXiv dataset and stores metadata properly."""
+    """Creates FAISS index from metadata.json and stores embeddings."""
 
     if not os.path.exists(METADATA_PATH):
         raise FileNotFoundError(f"Metadata file not found: {METADATA_PATH}")
 
-    # Load metadata
-    df = pd.read_json(METADATA_PATH)
+    print("Loading metadata.json...")
+    with open(METADATA_PATH, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
 
-    # Prepare data for FAISS indexing
-    documents = []
-    for _, row in df.iterrows():
-        metadata = {
-            "title": row["title"],
-            "authors": row["authors"],
-            "year": row["year"],
-            "category": row["categories"],
-            "pdf_url": row["pdf_url"]
-        }
-        doc = Document(page_content=row["abstract"], metadata=metadata)
-        documents.append(doc)
+    documents = [
+        Document(page_content=paper["abstract"], metadata={
+            "title": paper["title"],
+            "authors": paper["authors"],
+            "year": paper["year"],
+            "category": paper["categories"],
+            "pdf_url": paper["pdf_url"]
+        })
+        for paper in metadata
+    ]
 
-    # Create FAISS index with LangChain
-    embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    print("Generating embeddings and creating FAISS index...")
+    embedding_model = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2",
+        model_kwargs={"device": "cpu"}
+    )
+
     vectorstore = FAISS.from_documents(documents, embedding_model)
-
-    # Save FAISS index
     vectorstore.save_local(INDEX_DIR)
+
     print(f"FAISS index created and stored in {INDEX_DIR}")
+
+if __name__ == "__main__":
+    create_faiss_index()

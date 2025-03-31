@@ -2,7 +2,9 @@ import os
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 
-INDEX_DIR = "indexes/"
+from core import settings
+
+INDEX_DIR = os.path.join(settings.BASE_DIR, "faiss_index")
 
 def search_faiss_index(query, top_k=5):
     """Search FAISS index using LangChain, retrieving full metadata for relevant papers."""
@@ -12,7 +14,7 @@ def search_faiss_index(query, top_k=5):
 
     # Load FAISS index
     embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-    vectorstore = FAISS.load_local(INDEX_DIR, embedding_model)
+    vectorstore = FAISS.load_local(INDEX_DIR, embedding_model, allow_dangerous_deserialization=True)  #vectorstore - .index file
 
     # Perform similarity search
     results = vectorstore.similarity_search(query, k=top_k)

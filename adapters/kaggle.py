@@ -1,15 +1,19 @@
 import os
 import json
 import pandas as pd
+from datetime import datetime
 
 DATASET_PATH = "datasets/arxiv-metadata-oai-snapshot.json"
-TARGET_SIZE_GB = 1  # Load approximately 1GB of data
+METADATA_PATH = "metadata.json"
+TARGET_SIZE_GB = 1  # Load approx. 1GB of data
+
 
 def fetch_arxiv_data():
     """Loads ~1GB of ArXiv dataset efficiently from a local JSON file."""
+    print("Current Working Directory:", os.getcwd())
 
     if not os.path.exists(DATASET_PATH):
-        raise FileNotFoundError(f"Dataset not found at {DATASET_PATH}. Please run Kaggle API download first.")
+        raise FileNotFoundError(f"Dataset not found at {DATASET_PATH}. Please download it first.")
 
     print("Reading dataset in chunks until ~1GB of data is loaded...")
 
@@ -22,28 +26,56 @@ def fetch_arxiv_data():
                 record = json.loads(line)
                 data.append(record)
 
-                # Estimate memory size (each JSON object as string)
-                total_size += len(line.encode("utf-8"))
+                total_size += len(line.encode("utf-8"))  # Estimate memory usage
 
-                # Stop when ~1GB of data is reached
                 if total_size >= TARGET_SIZE_GB * 1024 * 1024 * 1024:
-                    break
+                    break  # Stop when ~1GB is loaded
             except json.JSONDecodeError:
                 continue  # Skip corrupted lines
 
-    df = pd.DataFrame(data)  # Convert to Pandas DataFrame
-
-    print(f"Loaded {len(df)} records (~{total_size / (1024**3):.2f} GB).")
+    df = pd.DataFrame(data)
+    print(f"Loaded {len(df)} records (~{total_size / (1024 ** 3):.2f} GB).")
     return df
 
+
+def extract_year(versions):
+    """Safely extracts the year from the 'versions' field."""
+    if isinstance(versions, list) and len(versions) > 0 and "created" in versions[0]:
+        try:
+            # Convert 'created' string to datetime object and extract the year
+            return datetime.strptime(versions[0]["created"], "%a, %d %b %Y %H:%M:%S %Z").year
+        except ValueError:
+            return "Unknown"  # Return "Unknown" if parsing fails
+    return "Unknown"  # Default if year is missing
+
+
 def process_arxiv_data(df):
-    """Prepares Kaggle arXiv dataset for indexing."""
+    """Processes Kaggle arXiv dataset and saves it as metadata.json."""
 
-    df = df[['id', 'title', 'abstract', 'authors', 'categories', 'versions']].copy()  # Create a new DataFrame
+    # Select relevant fields
+    df = df[['id', 'title', 'abstract', 'authors', 'categories', 'versions']].dropna()
 
-    df.loc[:, 'year'] = df['versions'].apply(lambda v: v[0]['created'][:4])
+    # Extract year safely
+    df.loc[:, 'year'] = df['versions'].apply(extract_year)
+
+    # Generate PDF URL
     df.loc[:, 'pdf_url'] = df['id'].apply(lambda x: f"https://arxiv.org/pdf/{x}.pdf")
 
-    df = df.drop(columns=['versions'])
+    # Remove unnecessary columns
+    df = df.drop(columns=['versions']).dropna()
 
-    return df.dropna()
+    # Convert to JSON format and save
+    metadata = df.to_dict(orient="records")
+
+    # Validate JSON structure before saving
+    try:
+        with open(METADATA_PATH, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=4)
+        print(f"Metadata saved to {METADATA_PATH}.")
+    except Exception as e:
+        print(f"Error saving metadata: {e}")
+
+
+if __name__ == "__main__":
+    df = fetch_arxiv_data()
+    process_arxiv_data(df)
