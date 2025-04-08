@@ -1,1 +1,2 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
+multimodal_rag/faiss_index/index.faiss filter=lfs diff=lfs merge=lfs -text
