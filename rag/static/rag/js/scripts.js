@@ -1,21 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchQuery");
     const resultsTable = document.getElementById("resultsTable");
     const tableBody = resultsTable.querySelector("tbody");
     const tableHead = resultsTable.querySelector("thead");
     const tableContainer = document.getElementById("tableContainer");
     const loadingScreen = document.getElementById("loadingScreen");
-    const loadingText = document.getElementById("loadingText");
     const closeResultsBtn = document.getElementById("closeResults");
+    const imageInput = document.getElementById("imageInput");
+    const recordButton = document.getElementById("recordAudio");
+    const recordingStatus = document.getElementById("recordingStatus");
 
     // Hide elements initially
     loadingScreen.style.display = "none";
     tableContainer.classList.remove("visible");
     closeResultsBtn.classList.remove("visible");
 
+    let mediaRecorder;
+    let audioChunks = [];
+
     // Show loading animation
     function showLoadingAnimation() {
-        loadingText.textContent = "MARUTI"; // Full fade effect
         loadingScreen.style.display = "flex";
     }
 
@@ -23,12 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
         loadingScreen.style.display = "none";
     }
 
-    // Handle search submission
-    searchForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const query = document.getElementById("searchQuery").value.trim();
-        if (!query) {
+    // Function to perform search with extracted text
+    function performSearch(query) {
+        if (!query.trim()) {
             alert("Please enter a search query.");
             return;
         }
@@ -72,11 +74,82 @@ document.addEventListener("DOMContentLoaded", function () {
                 hideLoadingAnimation();
                 console.error("Error fetching search results:", error);
             });
+    }
+
+    // Handle text-based search submission
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        performSearch(searchInput.value);
     });
 
-    // Close Results
+    // Handle Image Upload and Extract Text Before Searching
+    imageInput.addEventListener("change", function () {
+        const file = imageInput.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch("/search/process_image/", { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.extracted_text && data.extracted_text.trim()) {
+                        searchInput.value = data.extracted_text.trim();
+                        performSearch(data.extracted_text);
+                    } else {
+                        alert("No text could be extracted from the image.");
+                    }
+                })
+                .catch(error => console.error("Image processing failed:", error));
+        }
+    });
+
+    // Handle Audio Recording and Extract Text Before Searching
+    recordButton.addEventListener("click", async () => {
+        if (!mediaRecorder) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+                    audioChunks = [];
+
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob);
+
+                    fetch("/search/process_audio/", { method: "POST", body: formData })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.transcribed_text && data.transcribed_text.trim()) {
+                                searchInput.value = data.transcribed_text.trim();
+                                performSearch(data.transcribed_text);
+                            } else {
+                                alert("No text could be extracted from the audio.");
+                            }
+                        })
+                        .catch(error => console.error("Audio processing failed:", error));
+                };
+
+                mediaRecorder.start();
+                recordingStatus.innerText = "Recording... (Click Again to Stop)";
+            } catch (error) {
+                console.error("Error accessing microphone:", error);
+            }
+        } else {
+            mediaRecorder.stop();
+            mediaRecorder = null;
+            recordingStatus.innerText = "";
+        }
+    });
+
+    // Close Results and Clear Search Bar
     closeResultsBtn.addEventListener("click", function () {
         tableContainer.classList.remove("visible");
         closeResultsBtn.classList.remove("visible");
+        searchInput.value = ""; // Reset search input
     });
 });

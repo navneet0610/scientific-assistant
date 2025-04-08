@@ -1,0 +1,369 @@
+/* Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Basic Layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+}
+
+/* Main Container */
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    height: auto;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+/* Brand Text Style */
+.brand {
+    font-size: 3rem;  /* Adjust font size */
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    background-clip: text;
+    letter-spacing: 2px;  /* Slight spacing between letters */
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1), 0 0 25px var(--highlight-color), 0 0 5px var(--highlight-color);
+    animation: colorChange 5s infinite alternate;  /* Smooth animation for color change */
+    transition: all 0.3s ease;  /* Smooth transition for dynamic changes */
+    color: #007bff;
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    cursor: pointer;
+    font: sans-serif;
+}
+
+.brand:hover {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), 0 0 25px var(--highlight-color), 0 0 5px var(--highlight-color);
+    transform: scale(1.05); /* Slightly enlarge on hover to attract attention */
+}
+
+@keyframes colorChange {
+    0% {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    }
+    100% {
+        background: linear-gradient(45deg, var(--highlight-color), var(--primary-color));
+    }
+}
+
+.message {
+    text-align: center;
+    display:inline-block;
+    position:relative;
+    font-size: 24px;
+    margin: auto;
+    color: #444;
+    margin-top: 20px;
+}
+
+/* Search Section */
+.search-container {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#searchQuery {
+    padding: 10px;
+    width: 300px;
+    height:50px;
+    font-size: 18px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+#goButton {
+    padding: 12px 30px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#goButton:hover {
+    background-color: #0056b3;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    display: none;
+    margin-top: 20px;
+    font-size: 24px;
+    color: #007bff;
+}
+
+.dot {
+    animation: dot-blink 1.5s infinite;
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes dot-blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Results Section */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    gap: 20px;
+    height: auto;
+}
+
+.result-tile {
+    display: flex;
+    flex-direction: column; /* Arrange the content vertically within each result tile */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-details {
+    flex-grow: 1;
+}
+
+.result-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.result-abstract {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+.result-caption {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.result-citation {
+    font-size: 14px;
+    color: #888;
+}
+
+.result-pdf {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.result-pdf:hover {
+    text-decoration: underline;
+}
+
+/* New CSS for images container */
+.result-images {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 images per row on desktop */
+    gap: 20px;  /* Space between images */
+    margin-top: 10px;
+}
+
+.result-images img {
+    width: 100%; /* Ensure the image fits within its cell */
+    height: auto;
+    cursor: pointer;  /* Shows a pointer when hovering over the image */
+    border-radius: 8px;
+    position: relative; /* Required for positioning the caption */
+}
+
+/* This is the hover container for caption */
+.result-images .image-container {
+    position: relative;
+}
+
+/* Caption initially hidden */
+.result-images .caption {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 90%; /* So it doesn't overflow the image */
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Show caption on hover */
+.result-images .image-container:hover .caption {
+    display: block;
+}
+
+/* For responsiveness */
+@media (max-width: 1200px) {
+    .result-images {
+        grid-template-columns: repeat(3, 1fr); /* 3 images per row */
+    }
+}
+
+@media (max-width: 768px) {
+    .result-images {
+        grid-template-columns: repeat(2, 1fr); /* 2 images per row */
+    }
+}
+
+@media (max-width: 480px) {
+    .result-images {
+        grid-template-columns: 1fr; /* 1 image per row */
+    }
+}
+.button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  height: 50px;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+.custum-file-upload {
+  height: 48px;
+  width: 55px;
+  margin-right: 15px;
+  display: flex;
+  align-items: space-between;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #e8e8e8;
+  background-color: #212121;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0px 48px 35px -48px #e8e8e8;
+}
+
+.custum-file-upload .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .icon svg {
+  height: 25px;
+  fill: #e8e8e8;
+}
+
+.custum-file-upload .text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custum-file-upload .text span {
+  font-weight: 400;
+  color: #e8e8e8;
+}
+
+.custum-file-upload input {
+  display: none;
+}

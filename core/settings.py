@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parents[1] # root of the project - scientific_assistant/
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,7 +56,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'rag/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'multimodal_rag/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,7 +118,45 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'rag/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'multimodal_rag/static')]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',  # This handler will capture all levels from DEBUG and above
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'INFO',  # This will log INFO, WARNING, ERROR, and CRITICAL to a file
+            'class': 'logging.FileHandler',
+            'filename': 'app.log',
+        },
+    },
+    'loggers': {
+        'multimodal_rag.views': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'multimodal_rag.models': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'multimodal_rag': {  # A general logger for the entire app
+            'handlers': ['console'],
+            'level': 'WARNING',  # This will log WARNING and above to both console and file
+            'propagate': False,
+        },
+        'django': {  # Django's built-in logging for the whole project
+            'handlers': ['console'],
+            'level': 'ERROR',  # Django-related logs (like database errors) will be logged from ERROR and above
+            'propagate': False,
+        },
+    },
+}
 
 
 # Default primary key field type

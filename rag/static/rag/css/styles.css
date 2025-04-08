@@ -220,3 +220,33 @@ td a:hover {
     50% { width: 50%; }
     100% { width: 100%; }
 }
+
+.multimodal-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#imageInput, #recordAudio {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#recordAudio {
+    background-color: #dc3545;
+}
+
+#imageInput:hover, #recordAudio:hover {
+    opacity: 0.8;
+}
+
+#recordingStatus {
+    font-size: 14px;
+    color: red;
+}

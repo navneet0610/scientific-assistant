@@ -1,6 +1,6 @@
 import os
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from core import settings
 
@@ -15,6 +15,7 @@ def search_faiss_index(query, top_k=5):
     # Load FAISS index
     embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedding_model, allow_dangerous_deserialization=True)  #vectorstore - .index file
+    print("index loaded")
 
     # Perform similarity search
     results = vectorstore.similarity_search(query, k=top_k)
@@ -33,3 +34,8 @@ def search_faiss_index(query, top_k=5):
         })
 
     return response
+
+if __name__ == "__main__":
+    query_text = "deep learning for image recognition"
+    text_results = search_faiss_index(query_text, top_k=2)
+    print("Text Query Results:", text_results)
