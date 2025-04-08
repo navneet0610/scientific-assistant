@@ -59,7 +59,7 @@ function refineText(text) {
     refinedText = refinedText.replace(/</g, "&lt;");  // Convert < to &lt;
     refinedText = refinedText.replace(/>/g, "&gt;");  // Convert > to &gt;
     refinedText = refinedText.replace(/\\n/g, "<br>");
-    refinedText = refinedText.replace(/\\t/g, " ");  // Tab replaced with HTML space (emsp)
+    refinedText = refinedText.replace(/\\t/g, " ");
     refinedText = refinedText.replace(/\\&/g, "&;");
     return refinedText;
 }

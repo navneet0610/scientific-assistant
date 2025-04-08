@@ -27,9 +27,9 @@ To get started, clone the project repository to your local machine using Git:
 
 
 
-`git clone https://github.com/your-username/your-repository.git`
+`git clone https://github.com/navneet0610/scientific-assistant.git`
 
-`cd scientific_assitant`
+`cd scientific-assitant`
 
 ## Install virtualenv if you don't have it
 `pip install virtualenv`
@@ -48,7 +48,7 @@ To get started, clone the project repository to your local machine using Git:
 `pip install datasets numpy tqdm langchain langchain_community faiss-cpu torch requests django`
 
 ## Set paths in project to point to your local directories
-Inside `multimodal_faiss_search.py` set `BASE_DIR = r"your_dir\scientific_assistant"` - your_dir to point at the folder containing scientific_assitant
+Inside `multimodal_faiss_search.py` set `BASE_DIR = r"your_dir\scientific-assistant"` - your_dir to point at the folder containing scientific_assistant
 
 rest all paths will be set automatically.
 
