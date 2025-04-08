@@ -11,7 +11,6 @@ BASE_DIR = r"D:\Tampere\scientific_assistant"
 index_dir = os.path.normpath(os.path.join(BASE_DIR, "multimodal_rag", "faiss_index"))
 index_path = os.path.join(index_dir, "index.faiss")
 pkl_path = os.path.join(index_dir, "index.pkl")
-image_dir = os.path.normpath(os.path.join(BASE_DIR, "multimodal_rag", "images", "images"))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load CLIP
@@ -47,7 +46,7 @@ def print_results(results):
         print(f"\nResult {i+1}:")
         print(json.dumps(result.metadata, indent=4, ensure_ascii=False))
 
-def search_text(query: str, k=5):
+def search_text(query: str, k=10):
     results = faiss_index.similarity_search(query, k=k)
     all_results = []
     for i, result in enumerate(results):
@@ -55,7 +54,7 @@ def search_text(query: str, k=5):
     print(all_results)
     return all_results
 
-def search_image(image_path: str, k=5):
+def search_image(image_path: str, k=10):
     image = Image.open(image_path).convert("RGB")
     inputs = clip_processor(images=image, return_tensors="pt").to(device)
     with torch.no_grad():
@@ -67,11 +66,11 @@ def search_image(image_path: str, k=5):
     return all_results
 
 # Example usage
-if __name__ == "__main__":
-    # ---- Text query ----
-    query_text = "quantum physics"
-    print("\n--- Text Search Results ---")
-    search_text(query_text, k=5)
+# if __name__ == "__main__":
+#     # ---- Text query ----
+#     query_text = "quantum physics"
+#     print("\n--- Text Search Results ---")
+#     search_text(query_text, k=5)
 
 #     # ---- Image query ----
 #     query_image_path = "D:\Tampere\scientific_assistant\multimodal_rag\images\cond-mat0006165_3.jpg"

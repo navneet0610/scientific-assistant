@@ -107,42 +107,49 @@ header {
     background-color: #0056b3;
 }
 
-/* Loading Indicator */
+/* Hide the loading indicator initially */
 .loading-indicator {
     display: none;
     margin-top: 20px;
-    font-size: 24px;
-    color: #007bff;
+    font-size: 55px;
+    font-weight: bold;
+    text-align: center; /* Center the dots */
+    color: #007bff; /* Blue color for the dots */
 }
 
-.dot {
-    animation: dot-blink 1.5s infinite;
+/* Style each dot */
+.loading-indicator .dot {
+    font-size: 80px; /* Make the dots larger */
+    animation: bounce 1.5s infinite ease-in-out; /* Apply bouncing animation */
+    display: inline-block;
+    margin: 0 5px; /* Space between dots */
 }
 
-.dot:nth-child(1) {
+/* Add a staggered delay for each dot to create the bounce effect */
+.loading-indicator .dot:nth-child(1) {
     animation-delay: 0s;
 }
 
-.dot:nth-child(2) {
+.loading-indicator .dot:nth-child(2) {
     animation-delay: 0.3s;
 }
 
-.dot:nth-child(3) {
+.loading-indicator .dot:nth-child(3) {
     animation-delay: 0.6s;
 }
 
-@keyframes dot-blink {
-    0% {
-        opacity: 0;
+/* Define the bounce animation */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
     }
-    50% {
-        opacity: 1;
+    40% {
+        transform: translateY(-20px); /* Move up */
     }
-    100% {
-        opacity: 0;
+    60% {
+        transform: translateY(-10px); /* Move slightly down */
     }
 }
-
 /* Results Section */
 .results-container {
     display: flex;

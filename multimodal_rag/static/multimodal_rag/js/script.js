@@ -11,23 +11,18 @@ function startSearch() {
     // Show the loading indicator
     document.getElementById('loadingIndicator').style.display = 'block';
 
-    // Hide the results if visible
     document.getElementById('results').innerHTML = '';
 
-    // Create a FormData object to send both the query and the image (if any)
     const formData = new FormData();
 
-    // If there is a query, add it to the FormData
     if (query) {
         formData.append('query', query);
     }
 
-    // If an image is selected, add it to the FormData
     if (imageFile) {
         formData.append('image', imageFile);
     }
 
-    // Add is_image flag to indicate whether it's an image search or not
     formData.append('is_image', imageFile ? 'true' : 'false');
 
     // Make POST request to the server using FormData (multipart/form-data)
@@ -56,6 +51,7 @@ function startSearch() {
 function refineText(text) {
     let refinedText = text.replace(/\\^([a-zA-Z0-9]+)/g, "<sup>$1</sup>");
     refinedText = refinedText.replace(/\\Gamma/g, "Γ");
+    refinedText = refinedText.replace(/\\Delta/g, "Δ");
     refinedText = refinedText.replace(/\\lambda/g, "λ");
     refinedText = refinedText.replace(/\\alpha/g, "α");
     refinedText = refinedText.replace(/\\epsilon/g, "ε");
