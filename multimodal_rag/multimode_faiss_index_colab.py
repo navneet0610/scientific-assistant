@@ -1,8 +1,6 @@
 import os
 import datasets
-import requests
 from typing import List
-import json
 from langchain_core.embeddings import Embeddings
 from tqdm import tqdm
 from langchain_community.vectorstores import FAISS
@@ -14,9 +12,7 @@ import re
 # Directories
 data_dir = "/content/drive/My Drive/arxiv_data"
 index_dir = "/content/drive/My Drive/faiss_index"
-image_dir = os.path.join(index_dir, "images")
-os.makedirs(image_dir, exist_ok=True)
-metadata_path = os.path.join(index_dir, "metadata.json")
+
 
 # Models
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -138,9 +134,6 @@ for i in tqdm_iter:
         for img_data in row.get("caption_images", []):
             for pair in img_data.get("cil_pairs", []):
                 if isinstance(pair["image"], Image.Image) and "image_file" in pair:
-                    image_filename = pair["image_file"].split("/")[-1]
-                    image_path = os.path.join(image_dir, image_filename)
-                    pair["image"].save(image_path)
                     caption = pair.get("sub_caption", "")
                     image_text = f"{text_content} {caption}" if caption else text_content
                     img_emb = get_clip_image_embedding(pair["image"])
@@ -148,7 +141,7 @@ for i in tqdm_iter:
                     image_texts.append(image_text)
 
                     image = {
-                        "image_name": image_filename,
+                        "image_name": pair["image_file"].split("/")[-1],
                         "caption": caption
                     }
                     metadata_entry["images"].append(image)
@@ -168,7 +161,7 @@ for i in tqdm_iter:
         else:
             faiss_index.merge_from(new_index)
 
-        del image_text, text_content, embedding_pair_text, embedding_pair_image, text_emb, img_embs, image_texts
+    del batch
 
     torch.cuda.empty_cache()
     tqdm_iter.set_description(f"Processed {i + batch_size} records")
