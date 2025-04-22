@@ -6,6 +6,8 @@ from django.views.decorators.http import require_POST
 import logging
 from multimodal_rag.multimodal_faiss_search import search_image, search_text, BASE_DIR
 
+logger = logging.getLogger("multimodal_rag.views")
+
 
 def index(request):
     """
@@ -17,7 +19,6 @@ def index(request):
 @require_POST
 def multimodal_search_view(request):
     try:
-        logger = logging.getLogger("multimodal_rag.views")
         is_image = request.POST.get("is_image", "false").lower() == "true"
 
         if is_image:
@@ -43,5 +44,7 @@ def multimodal_search_view(request):
 
         return JsonResponse(results, safe=False)
 
+
     except Exception as e:
+        logger.error(f"Error: {str(e)}")
         return JsonResponse({"error": str(e)}, status=500)
