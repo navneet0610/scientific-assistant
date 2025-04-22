@@ -67,7 +67,7 @@ rest all paths will be set automatically.
 `streamlit run app.py`
 - in your browser, UI is accessible at - http://localhost:8501
 
-# NOTES -
+## NOTES -
 
 - FAISS Index is sourced through two datasets - [ArxivCap](https://huggingface.co/datasets/MMInstruction/ArxivCap) and [Kaggle Arxiv Scientific Literature](https://www.kaggle.com/datasets/Cornell-University/arxiv).
 - ArxivCap index is best created on a GPU with cuda through - `multimodal_faiss_index_colab.py`
