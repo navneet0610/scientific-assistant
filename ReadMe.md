@@ -1,4 +1,4 @@
-# Voila! - Scientific Assistant - Django Project
+# Voila! - Scientific Assistant - Django Project with Streamlit UI
 
 This is a Django-based project for an AI based scientific assistant capable of retrieving text and graphical data for the textual and image query. 
 
@@ -6,7 +6,7 @@ Dataset - ArXivCap for multimodal retrieval and Kaggle Arxiv Scientific literatu
 
 Framework - Langchain with FAISS 
 
-[![Watch the video]](https://github.com/navneet0610/scientific-assistant/blob/master/demo-with-neuron-image-and-query.mkv)
+[![Watch the video]](https://github.com/navneet0610/scientific-assistant/blob/master/demo.mkv)
 
 This README provides steps for setting up the project on your local machine.
 
@@ -62,8 +62,10 @@ rest all paths will be set automatically.
 
 ## Run Streamlit Front-End UI
 
+`cd streamlit-ui`
+
 `streamlit run app.py`
-- in your browser UI is accessible at - http://localhost:8501
+- in your browser, UI is accessible at - http://localhost:8501
 
 # NOTES -
 
