@@ -47,11 +47,12 @@ def print_results(results):
         print(json.dumps(result.metadata, indent=4, ensure_ascii=False))
 
 def search_text(query: str, k=10):
-    results = faiss_index.similarity_search(query, k=k)
+    results = faiss_index.similarity_search_with_score(query, k=k)
     all_results = []
-    for i, result in enumerate(results):
-        all_results.append(result.metadata)
-    print(all_results)
+    for doc, score in results:
+        doc.metadata["score"] = float(score)
+        print(doc.metadata["score"])
+        all_results.append(doc.metadata)
     return all_results
 
 def search_image(image_path: str, k=10):
@@ -59,13 +60,15 @@ def search_image(image_path: str, k=10):
     inputs = clip_processor(images=image, return_tensors="pt").to(device)
     with torch.no_grad():
         img_emb = clip_model.get_image_features(**inputs).cpu().numpy().tolist()[0]
-    results = faiss_index.similarity_search_by_vector(img_emb, k=k)
+    results = faiss_index.similarity_search_with_score_by_vector(img_emb, k=k)
     all_results = []
-    for i, result in enumerate(results):
-        all_results.append(result.metadata)
+    for doc, score in results:
+        doc.metadata["score"] = float(score)
+        print(doc.metadata["score"])
+        all_results.append(doc.metadata)
     return all_results
 
-# Example usage
+# # Example usage
 # if __name__ == "__main__":
 #     # ---- Text query ----
 #     query_text = "quantum physics"
