@@ -17,18 +17,19 @@ st.set_page_config(page_title="🤖 Voila!", layout="wide")
 # Force light theme using custom CSS
 st.markdown("""
     <style>
-    body {
-        background-color: #faf6ff;
+     body {
+        background-color: #e5d7ff;
         color: #2c1e3e;
-    }
-    .stTextInput > div > input {
+     }
+     .stTextInput > div > input {
         color: #2c1e3e;
         background-color: white;
-    }
-    .css-1cpxqw2 {  /* Hacky way to overwrite dark theme background */
-        background-color: #faf6ff !important;
-    }
+     }
+     .css-1cpxqw2 {  /* Hacky way to overwrite dark theme background */
+        background-color: #e5d7ff !important;
+     }
     </style>
+
 """, unsafe_allow_html=True)
 
 # --- Sidebar Branding
@@ -110,41 +111,42 @@ if results:
     filtered_results = [item for item in results if item['score'] <= 41]
 
 # If no results are left after filtering, display a message
-if not filtered_results:
-    st.markdown("### Uh-oh! 😦 Sorry, we don't have papers on your query in our data.")
-else:
-    for idx, item in enumerate(filtered_results):
-        score = item['score']
+if go:
+    if not filtered_results:
+        st.markdown("### Uh-oh! 😦 Sorry, we don't have papers on your query in our data.")
+    else:
+        for idx, item in enumerate(filtered_results):
+            score = item['score']
 
-        st.markdown("---")
-        colL, colR = st.columns([3, 2])
+            st.markdown("---")
+            colL, colR = st.columns([3, 2])
 
-        with colL:
-            st.markdown(f"### {item.get('title', '')}")
-            if item.get("abstract"):
+            with colL:
+              st.markdown(f"### {item.get('title', '')}")
+              if item.get("abstract"):
                 st.markdown(f"**Abstract:** {item['abstract']}")
-            if item.get("caption"):
+              if item.get("caption"):
                 st.markdown(f"**Image Description:** {item['caption']}")
-            if item.get("citationCount"):
+              if item.get("citationCount"):
                 st.markdown(f"**Citations:** {item['citationCount']}")
-            if item.get("authors"):
+              if item.get("authors"):
                 st.markdown(f"**Authors:** {item['authors']}")
-            raw_categories = item.get("categories", "")
-            if isinstance(raw_categories, str):
+              raw_categories = item.get("categories", "")
+              if isinstance(raw_categories, str):
                 raw_categories = raw_categories.strip().split()  # Split by whitespace
-            translated_categories = translate_categories(raw_categories)
-            if translated_categories:
+              translated_categories = translate_categories(raw_categories)
+              if translated_categories:
                 st.markdown(f"**Categories:** {', '.join(translated_categories)}")
-            if item.get("journal"):
+              if item.get("journal"):
                 st.markdown(f"**Journal:** {item['journal']}")
-            if item.get("license"):
+              if item.get("license"):
                 st.markdown(f"**License:** [{item['license']}]({item['license']})")
 
-            if item.get("arxiv_id"):
+              if item.get("arxiv_id"):
                 st.markdown(f"[Download PDF](https://arxiv.org/pdf/{item['arxiv_id']}.pdf)")
 
-        with colR:
-            if item.get("images"):
+            with colR:
+              if item.get("images"):
                 images = item["images"]
                 initial_images = images[:4]  # First 4 images
                 remaining_images = images[4:]  # Remaining images
@@ -177,16 +179,16 @@ else:
                                         row[j].warning(f"Could not load image: {img['image_name']} — {e}")
 
         # Displaying the rounded tile based on score
-        with colR:
-            if score < 16:
+            with colR:
+             if score < 16:
                 st.markdown(
                     '<div style="position: absolute; top: 10px; right: 10px; background-color: green; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Voila! Preferred</div>',
                     unsafe_allow_html=True)
-            elif 16 <= score < 30:
+             elif 16 <= score < 30:
                 st.markdown(
                     '<div style="position: absolute; top: 10px; right: 10px; background-color: yellow; color: #2c1e3e; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Moderate Similarity</div>',
                     unsafe_allow_html=True)
-            elif 30 <= score < 41:
+             elif 30 <= score < 41:
                 st.markdown(
                     '<div style="position: absolute; top: 10px; right: 10px; background-color: red; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Low Similarity</div>',
                     unsafe_allow_html=True)

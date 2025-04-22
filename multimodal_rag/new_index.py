@@ -8,7 +8,7 @@ import torch
 from transformers import CLIPProcessor, CLIPModel
 
 # Directories
-merged_index_dir = "/content/drive/My Drive/merged_index_dir"
+merged_index_dir = "/content/drive/My Drive/merged_index"
 index_dir = "/content/drive/My Drive/faiss_index"
 filtered_cs_ml_category_arxiv_papers = os.path.join(index_dir, "filtered_arxiv_cs_statml.json")
 
